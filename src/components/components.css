@@ -1,0 +1,40 @@
+.card{
+    height: 40%;
+    width: 40%;
+    margin-left:30%;
+    margin-top: 10%;
+    background-color: rgb(219, 237, 243);
+    text-align: left;
+    padding: 20px 20px 20px 20px;
+}
+
+.comp-2{
+    color: rgb(0, 0, 0);
+    background-color: rgb(212, 212, 197);
+
+}
+
+.dashboard{
+    height: 80%;
+    width: 80%;
+    margin-right :10% ;
+    margin-top: 10%;
+    text-align : center;
+    padding: 20px 0px 20px 0px;
+
+}
+
+.page{
+    background-color: rgb(94, 73, 48);
+}
+
+.myclass{
+    display:inline-block;
+    width: 80px;
+    height: 40px;
+}
+
+.tablescroll{
+    height: 60px;
+    overflow-y: scroll;
+}

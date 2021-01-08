@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { Component } from 'react'
 import { Button , Form } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
-
+import { connect } from 'react-redux'
 
 class UpdateTask extends Component {
 
@@ -19,10 +19,17 @@ class UpdateTask extends Component {
     }
 
     getPreviousValues(){
+        if(!this.props.location.aboutProps)
+        return;
+
         axios
         .post("http://localhost:8000/get-task" , {
             id : this.props.location.aboutProps.id /// get id from props
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response =>{
             console.log(response.data)
             const data = response.data;
@@ -55,7 +62,11 @@ class UpdateTask extends Component {
             title : this.state.title,
             deadline : this.state.deadline,
             assigner : this.state.assigner,
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response =>{
             this.setState({completed : true})
         })
@@ -69,6 +80,12 @@ class UpdateTask extends Component {
     }
 
     render() {
+
+        if(!this.props.location.aboutProps){
+            return(
+                <Redirect to = "/admin/users"/>
+            )
+        }
 
         if(this.state.completed){
             return(
@@ -118,4 +135,10 @@ class UpdateTask extends Component {
     }
 }
 
-export default UpdateTask
+const mapStateToProps = (state) => {
+    return{
+        token :state.tokenReducer.token,
+    }
+}
+
+export default connect(mapStateToProps)(UpdateTask)

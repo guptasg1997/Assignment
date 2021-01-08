@@ -8,7 +8,6 @@ import { logoutRequest } from '../redux'
 import { tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
-import { Button , Form  } from 'react-bootstrap'
 
 class Delete extends Component {
 
@@ -82,7 +81,7 @@ const mapDispatchToProps = (dispatch) => {
         loginRequest : ()=> dispatch(loginRequest()) ,
         tokenRequest : (token)=> dispatch(tokenRequest(token)),
         fetchUsersRequest : () => dispatch(fetchUsersRequest()),
-        //fetchUsersSuccess : (users) => dispatch(fetchUsersSuccess(users)),
+        fetchUsersSuccess : (users) => dispatch(fetchUsersSuccess(users)),
         fetchUsersFailure : (error) => dispatch(fetchUsersFailure(error)),
     }
 }

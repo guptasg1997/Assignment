@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Button , Form } from 'react-bootstrap'
-import { Redirect , Link} from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+
 
 import axios from 'axios'
 
@@ -31,6 +33,7 @@ class AddTask extends Component {
     handleSubmit = (event)=>{
         event.preventDefault()
         console.log(this.props.location.aboutProps.id)
+        //console.log(this.state.deadline)
         axios
         .post('http://localhost:8000/add-task' ,{
             title : this.state.title,
@@ -38,12 +41,16 @@ class AddTask extends Component {
             deadline : this.state.deadline,
             assigner : this.state.assigner,
             assigned_to : this.props.location.aboutProps.id,
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response =>{
             this.setState({completed : true})
         })
         .catch(error => {
-            this.setState({errorMessage : error.message})
+            this.setState({errorMessage : error.response.data[0]})
         })
     }
 
@@ -97,4 +104,10 @@ class AddTask extends Component {
     }
 }
 
-export default AddTask
+const mapStateToProps = (state) => {
+    return{
+        token :state.tokenReducer.token,
+    }
+}
+
+export default connect(mapStateToProps)(AddTask)

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button , Form , Container , Row , Col , Navbar , Nav} from 'react-bootstrap'
-//import { useHistory } from 'react-router-dom'
 import { Redirect} from 'react-router-dom';
 import "./components.css"
 
@@ -67,8 +66,9 @@ class Login extends Component {
         })
         .catch(error =>{
             //console.log(error.message)
+            const temp = Object.values(error.response.data)
             this.setState({
-                errorMessage : error.response.data[0]
+                errorMessage : temp
             })
         })
     }
@@ -84,8 +84,10 @@ class Login extends Component {
                                 <Nav.Link href="/signup">Signup</Nav.Link>
                                 <Nav.Link href="/verifyreq">Email Verification</Nav.Link>
                         </Navbar>
+
                         { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage } </h3> }
+                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+                        
                         <Container className="card" >
                             <Row>
                             <Col xs = {0}></Col>

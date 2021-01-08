@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Link , Redirect} from 'react-router-dom'
-import { Button , Form , Container , Navbar , Nav } from 'react-bootstrap'
+import { Button , Form , Container } from 'react-bootstrap'
 import { loginRequest , logoutRequest , tokenRequest } from '../redux' 
 import { connect } from 'react-redux'
 
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 
 class CreateUser extends Component {
 
@@ -18,6 +18,7 @@ class CreateUser extends Component {
             retypepassword:'',
             loading : true,
             status : '',
+            errorMessage : '',
         }
     }
 
@@ -41,10 +42,12 @@ class CreateUser extends Component {
 
     handleSubmit = (event) =>{
         event.preventDefault()
-        console.log("handleSubmit")
-
+        if(!strongRegex.test(this.state.password)) {
+            this.setState({errorMessage :'Password not strong enough'})
+            return 
+        }
         axios
-        .post('http://localhost:8000/create_user' ,{
+        .post('http://localhost:8000/create-user' ,{
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
@@ -59,7 +62,7 @@ class CreateUser extends Component {
             this.setState({status : 'successfull'})
         })
         .catch(error =>{
-            console.log(error.response)
+            this.setState({errorMessage : error.response.data[0]})
         })
     }
 
@@ -83,6 +86,8 @@ class CreateUser extends Component {
                     <Nav.Link href="/admindashboard">Home</Nav.Link>
                 </Navbar> */}
                 <Container >
+                    { this.state.errorMessage &&
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
                     {(this.state.status) && <h4>User added</h4>}
                     <h3 className = 'test-left'>create user</h3>
                     <Form onSubmit = {this.handleSubmit} >

@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { Component } from 'react'
 import { Button , Form , Table , Col } from 'react-bootstrap'
-import { Redirect , Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Pagination from "react-js-pagination";
+import { connect } from 'react-redux'
+
 
 
 class AllTask extends Component {
@@ -23,12 +25,16 @@ class AllTask extends Component {
 
     storeCollector(pageNumber = 1){
         //if(this.props.location.aboutProps != null){
-            axios.
-            post(`http://localhost:8000/all-task?page=${pageNumber}` , {
+            axios
+            .post(`http://localhost:8000/all-task?page=${pageNumber}` , {
                 progress : this.state.progress,
                 check : this.state.check,
                 que : this.state.que
-            })
+            },{
+                headers: {
+                  'Authorization': `Bearer ${this.props.token}` 
+                }
+              })
             .then(response => {
                 //console.log(response.data)
                 this.setState({
@@ -40,7 +46,7 @@ class AllTask extends Component {
                 //console.log(this.state.data)
             })
             .catch(error =>{
-                this.setState({errorMessage : error.Message})
+                this.setState({errorMessage : error.response.data[0]})
             })
 
         //}
@@ -81,13 +87,14 @@ class AllTask extends Component {
     }
 
     callTable(){
-        const {data , current_page , per_page , total } = this.state.temp
+        const { current_page , per_page , total } = this.state.temp
         return(
         <>
         <Table striped bordered hover size="sm" >
             <thead>
                 <tr>
-                <th  width="70%">Task</th>
+                <th width = "10%">Assignee</th>
+                <th width="60%">Task</th>
                 <th width="30%">deadline/progress</th>
                 </tr>
             </thead>
@@ -95,6 +102,7 @@ class AllTask extends Component {
             return(
                 <tbody key = {data.id}>
                     <tr>
+                        <td >{data.assigned_to}</td>
                         <td>
                             <Table>
                                 <tbody>
@@ -106,7 +114,15 @@ class AllTask extends Component {
                         <td>
                             <Table>
                                 <tbody>
-                                <tr><td>{data.deadline}</td></tr>
+                                {/* <tr><td>{data.deadline}</td></tr> */}
+                                <tr>
+                                    {
+                                        data.overdue?
+                                        <td className = "text-danger"><b>{data.deadline}</b></td>
+                                        :
+                                        <td><b>{data.deadline}</b></td>
+                                    }
+                                </tr>
                                 <tr><td>progress : {data.progress}</td></tr>
                                 <tr>
                                     <td>
@@ -161,6 +177,8 @@ class AllTask extends Component {
         return (
             <div>
                 <h3>Viewing All Tasks</h3>
+                { this.state.errorMessage &&
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} xs = {9}>
@@ -174,7 +192,6 @@ class AllTask extends Component {
                         <Form.Group as={Col} xs = {3} >
                             <Form.Control 
                             as="select" 
-                            defaultValue="all"
                             name = "progress"
                             value = {this.state.progress}
                             onChange = {this.handleSelect}>
@@ -206,8 +223,6 @@ class AllTask extends Component {
                         </Form.Group>
                     </Form.Row>
                 </Form>
-                { this.state.errorMessage &&
-                    <h3 className="error"> { this.state.errorMessage } </h3> }
                 {this.callTable()}
                 
             </div>
@@ -215,4 +230,12 @@ class AllTask extends Component {
     }
 }
 
-export default AllTask
+const mapStateToProps = (state) => {
+    return{
+        token :state.tokenReducer.token,
+    }
+}
+
+export default connect(mapStateToProps)(AllTask)
+
+

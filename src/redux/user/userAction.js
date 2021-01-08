@@ -24,7 +24,7 @@ export const fetchUsersFailure = (error) => {
     }
 }
 
-const fetchUsers = () =>{
+// const fetchUsers = () =>{
  //ouhefpisrjpggit 
     
 
@@ -40,7 +40,7 @@ const fetchUsers = () =>{
     //         dispatch(fetchUsersFailure(errorMsg))
     //     })
     // }
-}
+// }
 
 
 

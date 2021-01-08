@@ -44,8 +44,7 @@ class AdminDashboard extends Component {
           })
         .then(response =>{
             const users = response.data
-            //console.log(users)
-            if(users[0].role != 'admin'){
+            if(users[0].role !== 'admin'){
                 this.props.tokenRequest('')
             this.props.logoutRequest()
             localStorage.setItem('localStorage' , JSON.stringify({
@@ -61,6 +60,8 @@ class AdminDashboard extends Component {
                 login : false,
                 token : ''
             }))
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp})
         })
 
         this.setState({
@@ -102,7 +103,7 @@ class AdminDashboard extends Component {
                     </Navbar>
                     <Container fluid>
                         { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage } </h3> }
+                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
                         <div className="text-left">
                             <Row >
                                 <Col xs = {3}>
@@ -113,6 +114,9 @@ class AdminDashboard extends Component {
                                         </div>
                                     </Row>
                                     <Row>
+                                        <Navbar bg="light" expand="lg">
+                                            <Nav.Link href="/admin/">Home</Nav.Link>
+                                        </Navbar>
                                         <Navbar bg="light" expand="lg">
                                             <Nav.Link href="/admin/users">User Data</Nav.Link>
                                         </Navbar>

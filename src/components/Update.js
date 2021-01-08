@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Link , Redirect} from 'react-router-dom'
+import { Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
@@ -8,6 +8,8 @@ import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../re
 
 import { Button , Form , Container } from 'react-bootstrap'
 import "./components.css"
+
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 
 class Update extends Component {
 

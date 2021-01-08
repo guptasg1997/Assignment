@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Redirect , Link  } from 'react-router-dom'
+import { Redirect  } from 'react-router-dom'
 
 import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
 import axios from 'axios'
-import AddTask from './AddTask'
 
-import { Button , Form , Table , Container , Row, Col ,Navbar , Tabs , Nav} from 'react-bootstrap'
+import { Button , Form , Table , Container , Row, Col ,Navbar  , Nav} from 'react-bootstrap'
 
 class AdminDashboard extends Component {
 

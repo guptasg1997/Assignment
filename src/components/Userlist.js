@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Redirect , Link  } from 'react-router-dom'
+import { Link  } from 'react-router-dom'
 
 import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
 import axios from 'axios'
-import { Button , Form , Table , Container , Row, Col ,Navbar , Tabs , Nav} from 'react-bootstrap'
+import { Button , Form , Table } from 'react-bootstrap'
 import Pagination from "react-js-pagination";
 
 
@@ -21,12 +21,14 @@ export class Userlist extends Component {
             loading : true,
             errorMessage : '',
             temp :'',
-            check : false
+            check : false,
+            pageNumber : 1,
         }
     }
 
     storeCollector(pageNumber = 1) {
         
+        this.setState({pageNumber : pageNumber})
         this.props.fetchUsersRequest()
         axios
         .post(`http://localhost:8000/alluser?page=${pageNumber}` ,{
@@ -70,7 +72,7 @@ export class Userlist extends Component {
         })
         .then(response => {
             console.log(response.data)
-            this.storeCollector()
+            this.storeCollector(this.state.pageNumber)
         })
         .catch(error =>{
             this.setState({errorMessage : error.message})
@@ -79,100 +81,99 @@ export class Userlist extends Component {
     }
 
     handleChange = (event) => {
-        //event.preventDefault()
         this.setState({
             que : event.target.value
         }, () => {this.storeCollector()})
-        // this.props.fetchUsersRequest()
-        // axios
-        // .post('http://localhost:8000/alluser' ,{
-        //     que : event.target.value,
-        //     check : this.state.check
-        // }
-        // ,{
-        //     headers: {
-        //       'Authorization': `Bearer ${this.props.token}` //this.props.store
-        //     }
-        //   })
-        // .then(response =>{
-        //     //this.setState({user : response.data})
-        //     const users = response.data.data
-        //     this.setState({temp:response.data})
-        //     this.props.fetchUsersSuccess(users)
-        // })
-        // .catch(error =>{
-        //     console.log('error')
-        //     this.setState({errorMessage : error.message})
-        //     this.props.fetchUsersFailure('Failed')
-        // })
+        
+    }
+
+    handleCheck = (event) => {
+        this.setState({
+            check : event.target.checked
+        }, () =>{this.storeCollector()})
+        
     }
 
     tableCall(){
 
-        const {data , current_page , per_page , total } = this.state.temp
+        const { current_page , per_page , total } = this.state.temp
         return(
             <>
             <Table striped bordered hover size="sm" >
                 <thead>
                     <tr>
+                    <th width = "3%" >id</th>
                     <th width = "5%"  >view</th>
                     <th width = "40%">Email</th>
-                    <th width = "30%">Name</th>
-                    <th width = "5%">add</th>
+                    <th width = "25%">Name</th>
+                    <th width = "7%">add task</th>
                     <th width = "10%">status</th>
                     <th width = "10%">Delete</th>
                     </tr>
                 </thead>
                 {
                     this.props.userData.map(((userData) => {
+                    
                     let status = ''
-                    if(userData.verify == 1)
+                    if(userData.verify === 1)
                     status = 'verified'
                     else
                     status = 'not verified'
 
                     return (
-                        userData.role == 'admin'?
+                        userData.role === 'admin'?
                         <tbody key = {userData.id}>
                             <tr >
-                                <td>--</td>
+                                <td>{userData.id}</td>
+                                <td className = "text-center">--</td>
                                 <td>{userData.email}</td> 
                                 <td>{userData.name}</td> 
-                                <td>--</td>
-                                <td>--</td>
+                                <td className = "text-center">--</td>
+                                <td className = "text-center">--</td>
                                 <td className = "text-right">admin</td>
                             </tr>
                         </tbody>
                         :
                         <tbody key= {userData.id}>
                             <tr>
-                                <td className = "text-right">
-                                    <Link  to ={{
-                                        pathname :'/admin/view-task',
-                                        aboutProps :{
-                                            id : userData.id,
-                                            name : userData.name
-                                        }
-                                    }} >
-                                        view
-                                    </Link>
+                                <td>{userData.id}</td>
+                                <td className = "text-center">
+                                    {
+                                        userData.verify?
+                                        <Link  to ={{
+                                            pathname :'/admin/view-task',
+                                            aboutProps :{
+                                                id : userData.id,
+                                                name : userData.name
+                                            }
+                                        }} >
+                                            view
+                                        </Link>
+                                        :
+                                        <p>--</p>
+                                    }
                                 </td> 
                                 <td>{userData.email}</td> 
                                 <td>{userData.name}</td>
-                                <td className = "text-right">
-                                    <Link  to ={{
-                                        pathname :'/admin/add-task',
-                                        aboutProps :{
-                                            id : userData.id,
-                                            name : userData.name
-                                        }
-                                    }} >
-                                        add
-                                    </Link>
+                                <td className = "text-center" >
+                                    {
+                                        userData.verify?
+                                        <Link  to ={{
+                                            pathname :'/admin/add-task',
+                                            aboutProps :{
+                                                id : userData.id,
+                                                name : userData.name
+                                            }
+                                        }} >
+                                            add
+                                        </Link>
+                                        :
+                                        <p>--</p>
+                                    }
                                 </td> 
                                 <td>{status}</td>
                                 <td className = "text-right">
-                                    <Button  variant = "secondary" 
+                                    <Button  variant = "secondary" size = "sm"
                                         onClick={() => 
                                         { if (window.confirm('Are you sure you wish to delete this item?')) this.handleDeleteClick(userData.id) } }>
                                         delete
@@ -201,36 +202,6 @@ export class Userlist extends Component {
             </div>
             </>
         )
-    }
-
-    handleCheck = (event) => {
-        this.setState({
-            check : event.target.checked
-        }, () =>{this.storeCollector()})
-        // console.log(event.target.checked)
-        // let isChecked = event.target.checked;
-        // this.props.fetchUsersRequest()
-        // axios
-        // .post('http://localhost:8000/alluser' ,{
-        //     que : this.state.props,
-        //     check : event.target.checked
-        // }
-        // ,{
-        //     headers: {
-        //       'Authorization': `Bearer ${this.props.token}` //this.props.store
-        //     }
-        //   })
-        // .then(response =>{
-        //     //this.setState({user : response.data})
-        //     const users = response.data.data
-        //     this.setState({temp:response.data})
-        //     this.props.fetchUsersSuccess(users)
-        // })
-        // .catch(error =>{
-        //     console.log('error')
-        //     this.setState({errorMessage : error.message})
-        //     this.props.fetchUsersFailure('Failed')
-        // })
     }
 
     componentDidMount(){

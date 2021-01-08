@@ -46,7 +46,7 @@ class Signup extends Component {
         event.preventDefault()
 
         if(!strongRegex.test(this.state.password)) {
-            this.setState({errorMessage :'Password not strong enough'})
+            this.setState({errorMessage :['Password not strong enough']})
             return 
         }
 
@@ -63,8 +63,8 @@ class Signup extends Component {
             //history.push("/login")
         })
         .catch(error =>{
-            //console.log(error.response)
-            this.setState({errorMessage : error.message})
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp})
         })
     }
 
@@ -85,8 +85,14 @@ class Signup extends Component {
                             <Nav.Link href="/signup">Signup</Nav.Link>
                             <Nav.Link href="/verifyreq">Email Verification</Nav.Link>
                     </Navbar>
+
                     { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage } </h3> }
+                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+
+                    {/* Object.keys(myObject).map(function(key, index) {
+                    myObject[key] *= 2;
+                    }) */}
+
                     <Container className = "card">
                     <h3>Signup Page</h3>
                     <Form onSubmit = {this.handleSubmit} >

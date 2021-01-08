@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Button , Table , Form , Col , Container} from 'react-bootstrap'
-import { Redirect , Link } from 'react-router-dom'
+import { Button , Table , Form , Col , Container , Dropdown , ButtonGroup} from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import Pagination from "react-js-pagination";
+import { connect } from 'react-redux'
+
 
 class ViewTaskDash extends Component {
     constructor(props) {
@@ -15,19 +17,26 @@ class ViewTaskDash extends Component {
              progress : 'all',
              check : false,
              que : '',
-             temp : ''
+             temp : '',
+             pageNumber : 1,
+             progressStatus : 'pending',
         }
     }
 
     storeCollector(pageNumber = 1){
+        this.setState({pageNumber:pageNumber})
         if(this.props.id != null){
-            axios.
-            post(`http://localhost:8000/view-task?page=${pageNumber}` , {
+            axios
+            .post(`http://localhost:8000/view-task?page=${pageNumber}` , {
                 id : this.props.id,
                 progress : this.state.progress,
                 check : this.state.check,
                 que : this.state.que
-            })
+            },{
+                headers: {
+                  'Authorization': `Bearer ${this.props.token}` 
+                }
+              })
             .then(response => {
                 this.setState({
                     temp : response.data,
@@ -50,10 +59,14 @@ class ViewTaskDash extends Component {
         axios
         .post("http://localhost:8000/complete-task" ,{
             id : id
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response => {
             console.log("done")
-            this.storeCollector()
+            this.storeCollector(this.state.pageNumber)
         })
         .catch(error=>{
             console.log('error in finishing task')
@@ -66,6 +79,13 @@ class ViewTaskDash extends Component {
         }, ()=>{this.storeCollector()})
 
     }
+
+    // handleProgressSelect = (event)=>{
+    //     this.setState({
+    //         progressStatus : event.target.value
+    //     })
+    //     console.log(this.state.progressStatus)
+    // }
 
     handleCheck = (event)=>{
         this.setState({
@@ -84,16 +104,41 @@ class ViewTaskDash extends Component {
         axios
         .post("http://localhost:8000/active-task" ,{
             id : id
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response => {
             console.log("done")
-            this.storeCollector()
+            this.storeCollector(this.state.pageNumber)
             //console.log(response.data)
         })
         .catch(error=>{
             console.log('error in finishing task')
         })
 
+    }
+
+    submitProgress =(id)=> (event) =>{
+        console.log(this.state.progressStatus)
+        axios
+        .post("http://localhost:8000/submit-progress" ,{
+            id : id,
+            progress : this.state.progressStatus
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
+        .then(response => {
+            console.log("done")
+            this.storeCollector(this.state.pageNumber)
+            //console.log(response.data)
+        })
+        .catch(error=>{
+            console.log('error in finishing task')
+        })
     }
     
     componentDidMount(){
@@ -104,10 +149,10 @@ class ViewTaskDash extends Component {
         const {data , current_page , per_page , total } = this.state.temp
         return(
         <>
-            <Table striped bordered hover size="sm">
+            <Table striped bordered  hover size="sm">
                 <thead>
                     <tr>
-                    <th width = "70%">Task</th>
+                    <th width = "70%">Tasks</th>
                     <th width = "30%">deadline/progress</th>
                     </tr>
                 </thead>
@@ -126,10 +171,17 @@ class ViewTaskDash extends Component {
                             <td>
                                 <Table>
                                     <tbody>
-                                    <tr><td>{data.deadline}</td></tr>
+                                    <tr>
+                                        {
+                                            data.overdue?
+                                            <td className = "text-danger"><b>{data.deadline}</b></td>
+                                            :
+                                            <td><b>{data.deadline}</b></td>
+                                        }
+                                    </tr>
                                     <tr><td>progress : {data.progress}</td></tr>
                                     <tr>
-                                        <td>
+                                        {/* <td>
                                         <Button size ="sm" variant = "outline-primary"
                                         onClick = {this.handleProgressClick(data.id)}>
                                             start/stop
@@ -139,6 +191,25 @@ class ViewTaskDash extends Component {
                                         { if (window.confirm('Are you sure you wish to finish this task?')) this.handleClick(data.id) } }>
                                             complete
                                         </Button>
+                                        </td> */}
+                                        <td>
+                                            <Dropdown as={ButtonGroup}>
+                                                <Button variant = "outline-secondary" size = "sm" onClick = {this.submitProgress(data.id)} >Submit Progress</Button>
+                                                <Dropdown.Toggle size="sm" split variant="outline-secondary" id="dropdown-split-basic" />
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'pending'})}}>pending</Dropdown.Item>
+                                                    <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'in_progress'})}}>in_progress</Dropdown.Item>
+                                                    <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'completed'})}}>completed</Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                            {/* <Form.Row>
+                                            <Button variant = "outline-secondary" size = "sm" onClick = {this.submitProgress(data.id)} >Submit Progress</Button>
+                                            <DropdownButton variant = "outline" id="dropdown-basic-button" size = "sm">
+                                                <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'pending'})}}>pending</Dropdown.Item>
+                                                <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'in_progress'})}}>in_progress</Dropdown.Item>
+                                                <Dropdown.Item size = "sm" onClick = {() => {this.setState({progressStatus : 'completed'})}}>completed</Dropdown.Item>
+                                            </DropdownButton>
+                                            </Form.Row> */}
                                         </td>
                                     </tr>
                                     {/* <tr><td><Button onClick ={this.handleClick(data.id)}>submit</Button></td></tr> */}
@@ -187,7 +258,6 @@ class ViewTaskDash extends Component {
                         <Form.Group as={Col} xs = {3} controlId="formGridState" >
                             <Form.Control 
                             as="select" 
-                            defaultValue="all"
                             name = "progress"
                             value = {this.state.progress}
                             onChange = {this.handleSelect}
@@ -229,4 +299,10 @@ class ViewTaskDash extends Component {
     }
 }
 
-export default ViewTaskDash
+const mapStateToProps = (state) => {
+    return{
+        token :state.tokenReducer.token,
+    }
+}
+
+export default connect(mapStateToProps)(ViewTaskDash)

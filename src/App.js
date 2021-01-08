@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 import {BrowserRouter as Router, Switch, Route , Redirect} from 'react-router-dom'
 import { Provider } from 'react-redux'
 import './App.css';
@@ -12,8 +14,6 @@ import Dashboard from './components/Dashboard'
 import AdminDashboard from './components/AdminDashboard'
 import Verify from './components/Verify'
 import ChangePassword from './components/ChangePassword'
-import 'bootstrap/dist/css/bootstrap.min.css'
-
 
 
 function App() {

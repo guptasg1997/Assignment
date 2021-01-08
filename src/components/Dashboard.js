@@ -1,6 +1,6 @@
-import React, { Component , useEffect } from 'react'
+import React, { Component  } from 'react'
 import { connect } from 'react-redux'
-import {BrowserRouter as Router, Switch, Route , Redirect , Link} from 'react-router-dom'
+import { Route , Redirect } from 'react-router-dom'
 
 import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
@@ -11,7 +11,7 @@ import Update from './Update'
 import ViewTaskDash from './ViewTaskDash'
 import Piechart from './Piechart'
 
-import { Button , Form , Nav , Navbar , Container , Row , Col , ListGroup  } from 'react-bootstrap'
+import { Nav , Navbar , Container , Row , Col , ListGroup  } from 'react-bootstrap'
 
 class Dashboard extends Component {
 
@@ -58,7 +58,7 @@ class Dashboard extends Component {
         })
     }
 
-     handleSubmit = (event) =>{
+     handleLogoutSubmit = (event) =>{
         localStorage.setItem('localStorage' , JSON.stringify({
             login : false,
             token : ''
@@ -72,7 +72,11 @@ class Dashboard extends Component {
         axios
         .post("http://localhost:8000/piechart" , {
             id : this.props.userData[0].id //get value from props
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response => {
             this.setState({progress : response.data})
         })
@@ -97,7 +101,7 @@ class Dashboard extends Component {
             </>
         )
 
-        if( this.props.loginStatus && !this.props.loading && this.props.userData[0].role == 'admin')
+        if( this.props.loginStatus && !this.props.loading && this.props.userData[0].role === 'admin')
         return(
             <>
                 <Redirect to = "/admin"/>
@@ -109,11 +113,13 @@ class Dashboard extends Component {
               {
                 this.props.loginStatus?
                   <div>
+                      { this.state.errorMessage &&
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
                     <Navbar bg="light" expand="lg">
                         <Navbar.Brand href="/login">SG UI</Navbar.Brand>
                         <Nav.Link href="/dashboard/update" >Update</Nav.Link>
                         <Nav.Link href="/dashboard/delete">delete account</Nav.Link>
-                        <Nav.Link onClick = {this.handleSubmit}>Logout</Nav.Link>
+                        <Nav.Link onClick = {this.handleLogoutSubmit}>Logout</Nav.Link>
                     </Navbar>
                     <Container fluid >
                         <Row>
@@ -123,9 +129,9 @@ class Dashboard extends Component {
                                 <ListGroup>
                                 <ListGroup.Item>pending : {this.state.progress.pending}</ListGroup.Item>
                                 <ListGroup.Item>in progress : {this.state.progress.in_progress}</ListGroup.Item>
-                                <ListGroup.Item>overdue : {this.state.progress.overdue}</ListGroup.Item>
                                 <ListGroup.Item>completed on time : {this.state.progress.completed_on_time}</ListGroup.Item>
                                 <ListGroup.Item>completed late : {this.state.progress.completed_late}</ListGroup.Item>
+                                <ListGroup.Item>overdue : {this.state.progress.overdue}</ListGroup.Item>
                                 </ListGroup>
                             </Col>
                             <Col xs = {9}>

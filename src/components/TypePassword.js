@@ -5,6 +5,8 @@ import axios from 'axios'
 import { Button , Form , Container} from 'react-bootstrap'
 import "./components.css"
 
+const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
 export class TypePassword extends Component {
 
     constructor(props) {
@@ -12,7 +14,8 @@ export class TypePassword extends Component {
     
         this.state = {
              password : '' ,
-             retypepassword : ''
+             retypepassword : '',
+             errorMessage : ''
         }
     }
     
@@ -28,8 +31,13 @@ export class TypePassword extends Component {
     handleSubmit = (event) =>{
         event.preventDefault();
 
-        axios.
-        post('http://localhost:8000/changepassword' , this.state , {
+        if(!strongRegex.test(this.state.password)) {
+            this.setState({errorMessage :'Password not strong enough'})
+            return 
+        }
+
+        axios
+        .post('http://localhost:8000/changepassword' , this.state , {
             headers: {
                 'Authorization': `Bearer ${this.props.token}` //this.props.store
               }
@@ -48,6 +56,8 @@ export class TypePassword extends Component {
             <>
                 <div className = "card">
                     <Container>
+                        { this.state.errorMessage &&
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
                         <Form onSubmit = {this.handleSubmit}>
                         <div>
                             <Form.Label>Password:</Form.Label>{"\n"}

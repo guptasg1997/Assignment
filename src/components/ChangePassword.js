@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import { Redirect} from 'react-router-dom'
-import axios from 'axios'
-import { Button , Form } from 'react-bootstrap'
+
 import TypePassword from './TypePassword'
 
 class ChangePassword extends Component {

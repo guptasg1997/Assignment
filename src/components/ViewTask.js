@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Button , Form , Table , Col } from 'react-bootstrap'
 import { Redirect , Link } from 'react-router-dom'
 import Pagination from "react-js-pagination";
+import { connect } from 'react-redux'
 
 
 class ViewTask extends Component {
@@ -18,18 +19,25 @@ class ViewTask extends Component {
              check : false,
              que : '',
              temp : '',
+             pageNumber : 1
         }
     }
 
     storeCollector(pageNumber = 1){
+        this.setState({pageNumber : pageNumber})
+
         if(this.props.location.aboutProps != null){
-            axios.
-            post(`http://localhost:8000/view-task?page=${pageNumber}` , {
+            axios
+            .post(`http://localhost:8000/view-task?page=${pageNumber}` , {
                 id : this.props.location.aboutProps.id, /// take this value from props
                 progress : this.state.progress,
                 check : this.state.check,
                 que : this.state.que
-            })
+            },{
+                headers: {
+                  'Authorization': `Bearer ${this.props.token}` 
+                }
+              })
             .then(response => {
                 //console.log(response.data)
                 this.setState({
@@ -53,9 +61,14 @@ class ViewTask extends Component {
         axios
         .post("http://localhost:8000/delete-task",{
             id : id
-        })
+        },{
+            headers: {
+              'Authorization': `Bearer ${this.props.token}` 
+            }
+          })
         .then(response => {
             console.log('deleted')
+            this.storeCollector(this.state.pageNumber)
         })
         .catch(error => {
             console.log('error while deleting')
@@ -87,17 +100,17 @@ class ViewTask extends Component {
     }
 
     callTable(){
-        const {data , current_page , per_page , total } = this.state.temp
+        const {current_page , per_page , total } = this.state.temp
         return(
         <>
         <Table striped bordered hover size="sm" >
             <thead>
                 <tr>
-                <th  width="70%">Task</th>
+                <th  width="70%">Tasks</th>
                 <th width="30%">deadline/progress</th>
                 </tr>
             </thead>
-        {this.state.data.map((data) => {
+        {this.state.data && this.state.data.map((data) => {
             return(
                 <tbody key = {data.id}>
                     <tr>
@@ -112,7 +125,15 @@ class ViewTask extends Component {
                         <td>
                             <Table>
                                 <tbody>
-                                <tr><td>{data.deadline}</td></tr>
+                                {/* <tr><td>{data.deadline}</td></tr> */}
+                                <tr>
+                                    {
+                                        data.overdue?
+                                        <td className = "text-danger"><b>{data.deadline}</b></td>
+                                        :
+                                        <td><b>{data.deadline}</b></td>
+                                    }
+                                </tr>
                                 <tr><td>progress : {data.progress}</td></tr>
                                 <tr>
                                     <td>
@@ -182,7 +203,6 @@ class ViewTask extends Component {
                         <Form.Group as={Col} xs = {3} >
                             <Form.Control 
                             as="select" 
-                            defaultValue="all"
                             name = "progress"
                             value = {this.state.progress}
                             onChange = {this.handleSelect}>
@@ -223,4 +243,10 @@ class ViewTask extends Component {
     }
 }
 
-export default ViewTask
+const mapStateToProps = (state) => {
+    return{
+        token :state.tokenReducer.token,
+    }
+}
+
+export default connect(mapStateToProps)(ViewTask)

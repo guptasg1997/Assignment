@@ -11,6 +11,7 @@ class Forgotpass extends Component {
     
         this.state = {
              email:'',
+             errorMessage : ''
         }
     }
     
@@ -29,7 +30,9 @@ class Forgotpass extends Component {
         })
         .catch(error =>{
             //console.log("ssssgggg")
-            console.log(error)
+            //console.log(error)
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp})
         })
     }
 
@@ -44,6 +47,10 @@ class Forgotpass extends Component {
                         <Nav.Link href="/signup">Signup</Nav.Link>
                         <Nav.Link href="/verifyreq">Email Verification</Nav.Link>
                 </Navbar>
+
+                { this.state.errorMessage &&
+                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+
                 <Container className = "card">
                     <h3>Forgot Password</h3>
                     <Form onSubmit = {this.handleSubmit}>

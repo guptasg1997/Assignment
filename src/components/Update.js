@@ -23,6 +23,7 @@ class Update extends Component {
             retypepassword:'',
             loading : true,
             updateStatus :false,
+            errorMessage : ''
         }
     }
     
@@ -45,7 +46,6 @@ class Update extends Component {
     }
     
     handleSubmit = (event) => {
-        //this.props.fetchUsersRequest()
         event.preventDefault()
         axios.post('http://localhost:8000/update' , this.state, 
         {
@@ -56,7 +56,7 @@ class Update extends Component {
         .then(response =>{
             console.log(response)
 
-            if(this.state.email != ''){
+            if(this.state.email !== ''){
                 localStorage.setItem('localStorage' , JSON.stringify({
                     login : false,
                     token : ''
@@ -68,9 +68,8 @@ class Update extends Component {
             })
         })
         .catch(error =>{
-            //this.props.fetchUsersFailure('error')
-            console.log(error)
-            console.log(error.response)
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp})
         })
 
     }
@@ -106,6 +105,10 @@ class Update extends Component {
             <>
             {
                 this.props.loginStatus?
+                <div>
+                    { this.state.errorMessage &&
+                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+
                     <Container className = "text-left">
                         <h2>Update your Details </h2>
                         <p>*If you don't want to update any field, leave it blank</p>
@@ -147,6 +150,7 @@ class Update extends Component {
                             <Button type = "submit">UPDATE</Button>
                         </Form>
                     </Container>
+                    </div>
                 :
                 <div>
                     <Redirect to = "/" />

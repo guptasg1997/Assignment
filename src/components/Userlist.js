@@ -6,7 +6,7 @@ import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
 import axios from 'axios'
-import { Button , Form , Table } from 'react-bootstrap'
+import { Button , Form , Table , Col} from 'react-bootstrap'
 import Pagination from "react-js-pagination";
 
 
@@ -23,17 +23,19 @@ export class Userlist extends Component {
             temp :'',
             check : false,
             pageNumber : 1,
+            noOfUsers : 5,
         }
     }
 
     storeCollector(pageNumber = 1) {
-        
+        //console.log(this.state.noOfUsers)
         this.setState({pageNumber : pageNumber})
         this.props.fetchUsersRequest()
         axios
         .post(`http://localhost:8000/alluser?page=${pageNumber}` ,{
             que : this.state.que,
-            check : this.state.check
+            check : this.state.check,
+            noOfUsers : this.state.noOfUsers,
         }
         ,{
             headers: {
@@ -46,7 +48,6 @@ export class Userlist extends Component {
             this.props.fetchUsersSuccess(users)
         })
         .catch(error =>{
-            this.setState({errorMessage : error.message})
             this.props.fetchUsersFailure('Failed')
             this.props.tokenRequest('')
             this.props.logoutRequest()
@@ -54,6 +55,8 @@ export class Userlist extends Component {
                 login : false,
                 token : '',
             }))
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
         this.setState({
             loading : false
@@ -75,8 +78,8 @@ export class Userlist extends Component {
             this.storeCollector(this.state.pageNumber)
         })
         .catch(error =>{
-            this.setState({errorMessage : error.message})
-            console.log(error)
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
     }
 
@@ -94,25 +97,30 @@ export class Userlist extends Component {
         
     }
 
-    tableCall(){
+    handleSelect = (event) => {
+        this.setState({
+            noOfUsers : event.target.value
+        }, ()=>{this.storeCollector()})
+    }
 
+    tableCall(){
+        //console.log(this.state.temp)
         const { current_page , per_page , total } = this.state.temp
         return(
             <>
             <Table striped bordered hover size="sm" >
                 <thead>
                     <tr>
-                    <th width = "3%" >id</th>
                     <th width = "5%"  >view</th>
                     <th width = "40%">Email</th>
                     <th width = "25%">Name</th>
-                    <th width = "7%">add task</th>
+                    <th width = "10%">add task</th>
                     <th width = "10%">status</th>
                     <th width = "10%">Delete</th>
                     </tr>
                 </thead>
                 {
-                    this.props.userData.map(((userData) => {
+                    this.props.userData && this.props.userData.map(((userData) => {
                     
                     let status = ''
                     if(userData.verify === 1)
@@ -124,7 +132,6 @@ export class Userlist extends Component {
                         userData.role === 'admin'?
                         <tbody key = {userData.id}>
                             <tr >
-                                <td>{userData.id}</td>
                                 <td className = "text-center">--</td>
                                 <td>{userData.email}</td> 
                                 <td>{userData.name}</td> 
@@ -136,7 +143,6 @@ export class Userlist extends Component {
                         :
                         <tbody key= {userData.id}>
                             <tr>
-                                <td>{userData.id}</td>
                                 <td className = "text-center">
                                     {
                                         userData.verify?
@@ -217,21 +223,38 @@ export class Userlist extends Component {
         }
         return (
             <>
-            <Form>
-                    <Form.Control
-                    type = 'text'
-                    name = 'que'
-                    placeholder = 'search'
-                    value = {this.state.que}
-                    onChange = {this.handleChange}
-                    >
-                    </Form.Control>
-                    <Form.Check type="checkbox" label="view all users" 
-                    name = 'check'
-                    value = {this.state.check}
-                    onChange = {this.handleCheck}
-                    size = "sm" />
-            </Form>
+                { this.state.errorMessage &&
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
+                <Form>
+                        <Form.Row>
+                            <Form.Group as = {Col} xs = {9}>
+                                <Form.Control
+                                type = 'text'
+                                name = 'que'
+                                placeholder = 'search'
+                                value = {this.state.que}
+                                onChange = {this.handleChange}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group as = {Col} xs = {1}>
+                                <Form.Control 
+                                as="select" 
+                                name = "number"
+                                value = {this.state.noOfUsers}
+                                onChange = {this.handleSelect}>
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Form.Row>
+                        <Form.Check type="checkbox" label="view all users" 
+                        name = 'check'
+                        value = {this.state.check}
+                        onChange = {this.handleCheck}
+                        size = "sm" />
+                </Form>
             {
             (!this.props.loading)?
             <div>

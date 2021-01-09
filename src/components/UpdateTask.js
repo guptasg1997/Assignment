@@ -14,7 +14,8 @@ class UpdateTask extends Component {
              task : '',
              deadline :'',
              loading : true,
-             completed  : false
+             completed  : false,
+             errorMessage : '',
         }
     }
 
@@ -31,7 +32,7 @@ class UpdateTask extends Component {
             }
           })
         .then(response =>{
-            console.log(response.data)
+            //console.log(response.data)
             const data = response.data;
             this.setState({
                 title: data.title,
@@ -42,7 +43,8 @@ class UpdateTask extends Component {
             })
         })
         .catch(error=>{
-
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
     }
 
@@ -71,7 +73,8 @@ class UpdateTask extends Component {
             this.setState({completed : true})
         })
         .catch(error => {
-            this.setState({errorMessage : error.message})
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
     }
     
@@ -98,6 +101,8 @@ class UpdateTask extends Component {
         }
         return (
             <div>
+                { this.state.errorMessage &&
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
                 <Form onSubmit = {this.handleSubmit}>
                  <Form.Group>
                         <Form.Label>Title</Form.Label>

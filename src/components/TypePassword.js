@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 
 import { Button , Form , Container} from 'react-bootstrap'
 import "./components.css"
@@ -15,7 +16,8 @@ export class TypePassword extends Component {
         this.state = {
              password : '' ,
              retypepassword : '',
-             errorMessage : ''
+             errorMessage : '',
+             status : false,
         }
     }
     
@@ -43,21 +45,30 @@ export class TypePassword extends Component {
               }
         })
         .then(response =>{
-            console.log("password updated successfully")
+            //console.log("password updated successfully")
+            this.setState({status:true})
         })
         .catch(error =>{
-            console.log('error')
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
+            //console.log('error')
         })
     }
 
 
     render() {
+
+        if(this.state.status){
+            <Redirect to = "/login"/>
+        }
+
         return (
             <>
                 <div className = "card">
                     <Container>
                         { this.state.errorMessage &&
                         <h3 className="error"> { this.state.errorMessage } </h3> }
+                        
                         <Form onSubmit = {this.handleSubmit}>
                         <div>
                             <Form.Label>Password:</Form.Label>{"\n"}

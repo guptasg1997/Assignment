@@ -62,7 +62,8 @@ class CreateUser extends Component {
             this.setState({status : 'successfull'})
         })
         .catch(error =>{
-            this.setState({errorMessage : error.response.data[0]})
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
     }
 
@@ -88,6 +89,7 @@ class CreateUser extends Component {
                 <Container >
                     { this.state.errorMessage &&
                     <h3 className="error"> { this.state.errorMessage } </h3> }
+                    
                     {(this.state.status) && <h4>User added</h4>}
                     <h3 className = 'test-left'>create user</h3>
                     <Form onSubmit = {this.handleSubmit} >

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Route , Redirect} from 'react-router-dom'
+import { Route , Redirect ,Switch} from 'react-router-dom'
 
 import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
@@ -61,7 +61,7 @@ class AdminDashboard extends Component {
                 token : ''
             }))
             let temp = Object.values(error.response.data)
-            this.setState({errorMessage : temp})
+            this.setState({errorMessage : temp[0]})
         })
 
         this.setState({
@@ -103,7 +103,7 @@ class AdminDashboard extends Component {
                     </Navbar>
                     <Container fluid>
                         { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
                         <div className="text-left">
                             <Row >
                                 <Col xs = {3}>
@@ -131,13 +131,15 @@ class AdminDashboard extends Component {
                                 <Col xs = {9}>
                                     {/* <Userlist /> */}
                                     <div>
-                                    <Route path = '/admin/' exact component = {AllTask} />
-                                    <Route path = "/admin/users" component = {Userlist} />
-                                    <Route path = '/admin/create-user' component = {CreateUser}/>
-                                    <Route path = '/admin/add-task' exact component = {AddTask}/>
-                                    <Route path = '/admin/view-task' exact component = {ViewTask} />
-                                    <Route path = '/admin/update-task' exact component = {UpdateTask} />
-                                    <Route path = '/admin/piechart' exact component = {Piechart} />
+                                        <Switch>
+                                            <Route path = "/admin/users" component = {Userlist} />
+                                            <Route path = '/admin/create-user' component = {CreateUser}/>
+                                            <Route path = '/admin/add-task' exact component = {AddTask}/>
+                                            <Route path = '/admin/view-task' exact component = {ViewTask} />
+                                            <Route path = '/admin/update-task' exact component = {UpdateTask} />
+                                            <Route path = '/admin/piechart' exact component = {Piechart} />
+                                            <Route path = '/admin/' component = {AllTask} />
+                                        </Switch>
                                     </div>
                                 </Col>
                             </Row>

@@ -20,7 +20,7 @@ class AddTask extends Component {
              deadline : '',
              completed : false,
              errorMessage : '',
-             assigner : 'admin'
+             assigner : 'admin',
         }
     }
     
@@ -50,8 +50,8 @@ class AddTask extends Component {
             this.setState({completed : true})
         })
         .catch(error => {
-            this.setState({errorMessage : error.response.data[0]})
-        })
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})        })
     }
 
 

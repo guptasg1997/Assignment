@@ -46,8 +46,8 @@ class ViewTaskDash extends Component {
                 console.log(this.state.data)
             })
             .catch(error =>{
-                this.setState({errorMessage : error.Message})
-            })
+                let temp = Object.values(error.response.data)
+                this.setState({errorMessage : temp[0]})            })
 
         }
 
@@ -69,8 +69,8 @@ class ViewTaskDash extends Component {
             this.storeCollector(this.state.pageNumber)
         })
         .catch(error=>{
-            console.log('error in finishing task')
-        })
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})        })
     }
 
     handleSelect = (event)=>{
@@ -156,7 +156,7 @@ class ViewTaskDash extends Component {
                     <th width = "30%">deadline/progress</th>
                     </tr>
                 </thead>
-            {this.state.data.map((data) => {
+            {this.state.data && this.state.data.map((data) => {
                 return(
                     <tbody key = {data.id}>
                         <tr>

@@ -68,7 +68,7 @@ class Login extends Component {
             //console.log(error.message)
             const temp = Object.values(error.response.data)
             this.setState({
-                errorMessage : temp
+                errorMessage : temp[0]
             })
         })
     }
@@ -86,7 +86,7 @@ class Login extends Component {
                         </Navbar>
 
                         { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
                         
                         <Container className="card" >
                             <Row>

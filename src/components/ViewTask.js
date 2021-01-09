@@ -45,11 +45,11 @@ class ViewTask extends Component {
                     data : response.data.data,
                     loading : false
                 })
-                console.log(response.data)
+                //console.log(response.data)
             })
             .catch(error =>{
-                this.setState({errorMessage : error.Message})
-            })
+                let temp = Object.values(error.response.data)
+                this.setState({errorMessage : temp[0]})            })
 
         }
 
@@ -71,8 +71,8 @@ class ViewTask extends Component {
             this.storeCollector(this.state.pageNumber)
         })
         .catch(error => {
-            console.log('error while deleting')
-        })
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})        })
 
     }
 
@@ -209,7 +209,6 @@ class ViewTask extends Component {
                                 <option>all</option>
                                 <option>pending</option>
                                 <option>in_progress</option>
-                                <option>overdue</option>
                                 <option>completed_late</option>
                                 <option>completed_on_time</option>
                             </Form.Control>

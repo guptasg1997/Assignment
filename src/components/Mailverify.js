@@ -12,7 +12,7 @@ class Mailverify extends Component {
     
         this.state = {
              email:'',
-             errorMessage :''
+             errorMessage :'',
         }
     }
     
@@ -34,7 +34,7 @@ class Mailverify extends Component {
             // console.log("ssssgggg")
             //console.log(error)
             let temp = Object.values(error.response.data)
-            this.setState({errorMessage : temp})
+            this.setState({errorMessage : temp[0]})
         })
     }
 
@@ -51,7 +51,7 @@ class Mailverify extends Component {
                 </Navbar> 
 
                 { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
             
                 <Container className = "card">
                     <h3>Email Verification</h3>

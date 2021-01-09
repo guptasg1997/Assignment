@@ -11,7 +11,7 @@ import Update from './Update'
 import ViewTaskDash from './ViewTaskDash'
 import Piechart from './Piechart'
 
-import { Nav , Navbar , Container , Row , Col , ListGroup  } from 'react-bootstrap'
+import { Nav , Navbar , Container , Row , Col , ListGroup ,Button } from 'react-bootstrap'
 
 class Dashboard extends Component {
 
@@ -20,7 +20,8 @@ class Dashboard extends Component {
     
         this.state = {
             loading : true,
-            progress : ''
+            progress : '' ,
+            errorMessage : '',
             //user : [],
             //localLogin : ''
         }
@@ -48,6 +49,9 @@ class Dashboard extends Component {
 
         })
         .catch(error =>{
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
+            
             this.props.fetchUsersFailure('Failed')
             this.props.tokenRequest('')
             this.props.logoutRequest()
@@ -81,7 +85,9 @@ class Dashboard extends Component {
             this.setState({progress : response.data})
         })
         .catch(error =>{
-            console.log("error")
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
+            //console.log("error")
         })
         this.setState({
             loading :false
@@ -114,11 +120,15 @@ class Dashboard extends Component {
                 this.props.loginStatus?
                   <div>
                       { this.state.errorMessage &&
-                    <h3 className="error"> { this.state.errorMessage } </h3> }
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
+                        
                     <Navbar bg="light" expand="lg">
                         <Navbar.Brand href="/login">SG UI</Navbar.Brand>
                         <Nav.Link href="/dashboard/update" >Update</Nav.Link>
-                        <Nav.Link href="/dashboard/delete">delete account</Nav.Link>
+                        {/* <Button variant = "link" onClick = {()=>{ if (window.confirm('Are you sure you wish to delete this item?')) <Redirect to  = "/dashboard/update" /> } }>
+                        delete</Button> */}
+                        {/* <Nav.Link href="/dashboard/delete">delete account</Nav.Link> */}
+                        {/* <Nav.Link onClick={() => { if (window.confirm('Are you sure you wish to delete this item?')) href="/dashboard/update" } }>delete account</Nav.Link> */}
                         <Nav.Link onClick = {this.handleLogoutSubmit}>Logout</Nav.Link>
                     </Navbar>
                     <Container fluid >

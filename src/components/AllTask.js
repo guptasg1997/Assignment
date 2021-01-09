@@ -42,12 +42,12 @@ class AllTask extends Component {
                     data : response.data.data,
                     loading : false
                 })
-                console.log(response.data)
+                //console.log(response.data)
                 //console.log(this.state.data)
             })
             .catch(error =>{
-                this.setState({errorMessage : error.response.data[0]})
-            })
+                let temp = Object.values(error.response.data)
+                this.setState({errorMessage : temp[0]})})
 
         //}
 
@@ -81,7 +81,9 @@ class AllTask extends Component {
             console.log('deleted')
         })
         .catch(error => {
-            console.log('error while deleting')
+            //console.log('error while deleting')
+            let temp = Object.values(error.response.data)
+            this.setState({errorMessage : temp[0]})
         })
 
     }
@@ -98,11 +100,11 @@ class AllTask extends Component {
                 <th width="30%">deadline/progress</th>
                 </tr>
             </thead>
-        {this.state.data.map((data) => {
+        {this.state.data && this.state.data.map((data) => {
             return(
                 <tbody key = {data.id}>
                     <tr>
-                        <td >{data.assigned_to}</td>
+                        <td >{data.name}</td>
                         <td>
                             <Table>
                                 <tbody>
@@ -177,8 +179,10 @@ class AllTask extends Component {
         return (
             <div>
                 <h3>Viewing All Tasks</h3>
+                
                 { this.state.errorMessage &&
                     <h3 className="error"> { this.state.errorMessage } </h3> }
+
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} xs = {9}>

@@ -24,6 +24,7 @@ class Signup extends Component {
             password:'',
             retypepassword:'',
             errorMessage : '',
+            successMessage :'',
         }
     }
     
@@ -58,13 +59,15 @@ class Signup extends Component {
             // retypepassword: this.state.retypepassword
         )
         .then(response =>{
-            console.log(response)
-            //this.context.router.history.push(`/login`)
+            document.getElementById("clear").reset();
+            this.setState({successMessage : 'Account Created'})
+            //console.log(response)
+            // this.context.router.history.push(`/login`)
             //history.push("/login")
         })
         .catch(error =>{
             let temp = Object.values(error.response.data)
-            this.setState({errorMessage : temp})
+            this.setState({errorMessage : temp[0]})
         })
     }
 
@@ -87,7 +90,10 @@ class Signup extends Component {
                     </Navbar>
 
                     { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage[0] } </h3> }
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
+
+                    { this.state.successMessage &&
+                        <h3 className="error"> { this.state.successMessage } </h3> }
 
                     {/* Object.keys(myObject).map(function(key, index) {
                     myObject[key] *= 2;
@@ -95,7 +101,7 @@ class Signup extends Component {
 
                     <Container className = "card">
                     <h3>Signup Page</h3>
-                    <Form onSubmit = {this.handleSubmit} >
+                    <Form id = "clear" onSubmit = {this.handleSubmit} >
                         <Form.Group>
                             <Form.Label>Name:</Form.Label>
                             <Form.Control type = 'text' 

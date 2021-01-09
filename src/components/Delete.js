@@ -8,14 +8,14 @@ import { logoutRequest } from '../redux'
 import { tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
-
 class Delete extends Component {
 
     constructor(props) {
         super(props)
         
         this.state = {
-             password : ''
+             password : '',
+             errorMessage : '',
         }
     }
     
@@ -29,13 +29,14 @@ class Delete extends Component {
               }
           })
           .then(response => {
+                let temp = Object.values(error.response.data)
+                this.setState({errorMessage : temp[0]})
                 localStorage.setItem('localStorage' , JSON.stringify({
-                login : false,
-                token : ''
+                    login : false,
+                    token : ''
                 }))
-              //this.fetchUsersRequest([])  
-              this.logoutRequest();
-              this.tokenRequest('');
+                this.logoutRequest();
+                this.tokenRequest('');
           })
           .catch(error =>{
             console.log(error.response)
@@ -57,6 +58,8 @@ class Delete extends Component {
                     </div>
                     :
                     <div>
+                        { this.state.errorMessage &&
+                        <h3 className="error"> { this.state.errorMessage } </h3> }
                         <p>Account Deleted</p>
                     </div>
 

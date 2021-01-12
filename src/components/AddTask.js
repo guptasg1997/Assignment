@@ -20,7 +20,6 @@ class AddTask extends Component {
              deadline : '',
              completed : false,
              errorMessage : '',
-             assigner : 'admin',
         }
     }
     
@@ -39,7 +38,6 @@ class AddTask extends Component {
             title : this.state.title,
             task : this.state.task,
             deadline : this.state.deadline,
-            assigner : this.state.assigner,
             assigned_to : this.props.location.aboutProps.id,
         },{
             headers: {
@@ -59,7 +57,7 @@ class AddTask extends Component {
         // console.log(this.props.location.aboutProps)
         if(!this.props.location.aboutProps || this.state.completed){
             return(
-                <Redirect to = "/admin/users"/>
+                <Redirect to = "/dashboard"/>
             )
         }
 
@@ -67,7 +65,7 @@ class AddTask extends Component {
             <>
                 <h4>adding task to {this.props.location.aboutProps.name}</h4>
                 { this.state.errorMessage &&
-                        <h3 className="error"> { this.state.errorMessage } </h3> }
+                    <h3 className="error"> { this.state.errorMessage } </h3> }
                 <Form onSubmit = {this.handleSubmit}>
                  <Form.Group>
                         <Form.Label>Title</Form.Label>

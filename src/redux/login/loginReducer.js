@@ -1,8 +1,9 @@
 import {LOGIN_REQUEST} from './loginType'
-import {LOGOUT_REQUEST} from './loginType'
+import {LOGOUT_REQUEST , MY_REQUEST} from './loginType'
 
 const initialState = {
-    loginStatus : false
+    loginStatus : false,
+    myData : ''
 }
 
 const loginReducer = (state = initialState , action) => {
@@ -19,6 +20,12 @@ const loginReducer = (state = initialState , action) => {
                 loginStatus : false
             }
         default: return state
+
+        case MY_REQUEST:
+            return{
+                ...state,
+                myData : action.payload
+            }
         
     }
 

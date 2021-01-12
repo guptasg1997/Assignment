@@ -6,12 +6,12 @@
     background-color: rgb(219, 237, 243);
     text-align: left;
     padding: 20px 20px 20px 20px;
+    box-shadow: 10px 10px 5px grey;
 }
 
 .comp-2{
     color: rgb(0, 0, 0);
     background-color: rgb(212, 212, 197);
-
 }
 
 .dashboard{
@@ -37,4 +37,10 @@
 .tablescroll{
     height: 60px;
     overflow-y: scroll;
+}
+
+.error{
+    color : red;
+    font-style: italic;
+
 }

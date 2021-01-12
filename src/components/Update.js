@@ -109,7 +109,7 @@ class Update extends Component {
                     { this.state.errorMessage &&
                         <h3 className="error"> { this.state.errorMessage[0] } </h3> }
 
-                    <Container className = "text-left">
+                    <Container className = "card">
                         <h2>Update your Details </h2>
                         <p>*If you don't want to update any field, leave it blank</p>
                         <Form onSubmit = {this.handleSubmit}>

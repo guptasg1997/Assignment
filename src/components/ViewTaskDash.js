@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Button , Table , Form , Col , Container , Dropdown , ButtonGroup} from 'react-bootstrap'
+import { Button , Table , Form , Col , Container , Dropdown , ButtonGroup , Navbar, Nav} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Pagination from "react-js-pagination";
 import { connect } from 'react-redux'
@@ -245,6 +245,10 @@ class ViewTaskDash extends Component {
         return (
             <div>
                 <Container fluid className = "text-left">
+                {/* <Navbar>
+                    <Nav.Link href="/dashboard" >Assigned To you</Nav.Link>
+                    <Nav.Link href="/dashboard/all-task" >Assigned By you</Nav.Link>
+                </Navbar> */}
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} xs = {9}>
@@ -265,7 +269,6 @@ class ViewTaskDash extends Component {
                                 <option>all</option>
                                 <option>pending</option>
                                 <option>in_progress</option>
-                                <option>overdue</option>
                                 <option>completed_late</option>
                                 <option>completed_on_time</option>
                             </Form.Control>

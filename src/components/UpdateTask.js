@@ -38,7 +38,6 @@ class UpdateTask extends Component {
                 title: data.title,
                 task: data.task,
                 deadline : data.deadline,
-                assigner : 'admin',
                 loading : false,
             })
         })
@@ -86,13 +85,13 @@ class UpdateTask extends Component {
 
         if(!this.props.location.aboutProps){
             return(
-                <Redirect to = "/admin/users"/>
+                <Redirect to = "/dashboard"/>
             )
         }
 
         if(this.state.completed){
             return(
-                <Redirect to = "/admin/users"/>
+                <Redirect to = "/dashboard"/>
             )
         }
 

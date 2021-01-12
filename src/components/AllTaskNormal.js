@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Button , Form , Table , Col , Card } from 'react-bootstrap'
+import { Button , Form , Table , Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Pagination from "react-js-pagination";
 import { connect } from 'react-redux'
@@ -89,34 +89,24 @@ class AllTask extends Component {
 
     callTable(){
         const { current_page , per_page , total } = this.state.temp
-
+        
         return(
         <>
         <Table striped bordered hover size="sm" >
             <thead>
                 <tr>
-                <th width = "15%">Details</th>
-                {/* <th width = "10%">Assigner</th> */}
+                <th width = "10%">Assignee</th>
                 <th width="60%">Task</th>
-                <th width="25%">deadline/progress</th>
+                <th width="30%">deadline/progress</th>
                 </tr>
             </thead>
         {this.state.data && this.state.data.map((data) => {
             return(
                 <tbody key = {data.id}>
                     <tr>
-                        {/* <td >{data.name}</td>
-                        <td>{data.assigner}</td> */}
+                        <td >{data.name}</td>
                         <td>
                             <Table>
-                                <tbody>
-                                <tr><td>By :{data.assigner}</td></tr>
-                                <tr><td>To: {data.name}</td></tr>
-                                </tbody>
-                            </Table>
-                        </td>
-                        <td>
-                            <Table className = "text-left">
                                 <tbody>
                                     <tr><td>Title: {data.title}</td></tr>
                                     <tr><td>{data.task}</td></tr>
@@ -138,14 +128,14 @@ class AllTask extends Component {
                                 <tr>
                                     <td>
                                         <Link  to ={{
-                                            pathname :'/admin/update-task',
+                                            pathname :'/dashboard/update-task',
                                             aboutProps :{
                                                 id : data.id,
                                             }
                                         }} >
                                             update
                                         </Link>
-                                        <Button className = "ml-2" size = "sm" variant = "outline-danger"
+                                        <Button size = "sm" variant = "outline-danger"
                                         onClick={() => { if (window.confirm('Are you sure you wish to delete this item?')) this.handleDeleteClick(data.id) } }>
                                             delete
                                         </Button>
@@ -222,7 +212,7 @@ class AllTask extends Component {
                             value = {this.state.check}
                             onChange = {this.handleCheck}/>
                         </Form.Group>
-                        <Form.Group as={Col} xs = {2}>
+                        {/* <Form.Group as={Col} xs = {2}>
                             <Link to ={{
                                 pathname :'/admin/piechart',
                                 aboutProps :{
@@ -231,7 +221,7 @@ class AllTask extends Component {
                             }} >
                             <i>view chart</i>
                             </Link>
-                        </Form.Group>
+                        </Form.Group> */}
                     </Form.Row>
                 </Form>
                 {this.callTable()}

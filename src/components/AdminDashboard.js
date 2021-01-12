@@ -44,7 +44,7 @@ class AdminDashboard extends Component {
           })
         .then(response =>{
             const users = response.data
-            if(users[0].role !== 'admin'){
+            if(users.role !== 'admin'){
                 this.props.tokenRequest('')
             this.props.logoutRequest()
             localStorage.setItem('localStorage' , JSON.stringify({
@@ -56,10 +56,10 @@ class AdminDashboard extends Component {
         .catch(error =>{
             this.props.tokenRequest('')
             this.props.logoutRequest()
-            localStorage.setItem('localStorage' , JSON.stringify({
-                login : false,
-                token : ''
-            }))
+            // localStorage.setItem('localStorage' , JSON.stringify({
+            //     login : false,
+            //     token : ''
+            // }))
             let temp = Object.values(error.response.data)
             this.setState({errorMessage : temp[0]})
         })
@@ -71,10 +71,10 @@ class AdminDashboard extends Component {
 
 
     logoutreq = (event) =>{
-        localStorage.setItem('localStorage' , JSON.stringify({
-            login : false,
-            token : ''
-        }))
+        // localStorage.setItem('localStorage' , JSON.stringify({
+        //     login : false,
+        //     token : ''
+        // }))
         this.props.logoutRequest()
         this.props.tokenRequest('')
     }
@@ -101,7 +101,7 @@ class AdminDashboard extends Component {
                         <Nav.Link href="/admin/create-user"  >Create User</Nav.Link>
                         <Nav.Link onClick = {this.logoutreq} >Logout</Nav.Link>
                     </Navbar>
-                    <Container fluid>
+                    <Container fluid true>
                         { this.state.errorMessage &&
                         <h3 className="error"> { this.state.errorMessage } </h3> }
                         <div className="text-left">

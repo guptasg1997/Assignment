@@ -6,7 +6,7 @@ import { loginRequest ,logoutRequest ,tokenRequest } from '../redux'
 import { fetchUsersRequest , fetchUsersSuccess , fetchUsersFailure } from '../redux'
 
 import axios from 'axios'
-import { Button , Form , Table , Col , Badge } from 'react-bootstrap'
+import { Button , Form , Table , Col, Navbar , Nav} from 'react-bootstrap'
 import Pagination from "react-js-pagination";
 
 
@@ -108,15 +108,12 @@ export class Userlist extends Component {
         const { current_page , per_page , total } = this.state.temp
         return(
             <>
-            <Table striped bordered hover size="sm" >
+            <Table striped bordered hover size="sm" className = "text-left" >
                 <thead>
-                    <tr className = "text-center">
-                    <th width = "5%"  >view</th>
+                    <tr>
                     <th width = "40%">Email</th>
-                    <th width = "25%">Name</th>
+                    <th width = "30%">Name</th>
                     <th width = "10%">add task</th>
-                    <th width = "10%">status</th>
-                    <th width = "10%">Delete</th>
                     </tr>
                 </thead>
                 {
@@ -129,43 +126,15 @@ export class Userlist extends Component {
                     status = 'not verified'
 
                     return (
-                        userData.role === 'admin'?
-                        <tbody key = {userData.id}>
-                            <tr >
-                                <td className = "text-center">--</td>
-                                <td>{userData.email}</td> 
-                                <td>{userData.name}</td> 
-                                <td className = "text-center"><Badge pill variant="dark">admin</Badge></td>
-                                <td className = "text-center"><Badge pill variant="dark">admin</Badge></td>
-                                <td className = "text-center"><Badge pill variant="dark">admin</Badge></td>
-                            </tr>
-                        </tbody>
-                        :
                         <tbody key= {userData.id}>
                             <tr>
-                                <td className = "text-center">
-                                    {
-                                        userData.verify?
-                                        <Link  to ={{
-                                            pathname :'/admin/view-task',
-                                            aboutProps :{
-                                                id : userData.id,
-                                                name : userData.name
-                                            }
-                                        }} >
-                                            view
-                                        </Link>
-                                        :
-                                        <p>--</p>
-                                    }
-                                </td> 
                                 <td>{userData.email}</td> 
                                 <td>{userData.name}</td>
                                 <td className = "text-center" >
                                     {
                                         userData.verify?
                                         <Link  to ={{
-                                            pathname :'/admin/add-task',
+                                            pathname :'/dashboard/add-task',
                                             aboutProps :{
                                                 id : userData.id,
                                                 name : userData.name
@@ -176,24 +145,6 @@ export class Userlist extends Component {
                                         :
                                         <p>--</p>
                                     }
-                                </td> 
-                                <td className = "text-center">
-                                    {
-                                    userData.verify?
-                                    <Badge pill variant="success">Verified</Badge>
-                                    :
-                                    <Badge pill variant="danger">not Verified</Badge>
-                                    }
-                                </td>
-                                <td className = "text-center">
-                                    <Button  variant = "secondary" size = "sm"
-                                        onClick={() => 
-                                        { if (window.confirm('Are you sure you wish to delete this item?')) this.handleDeleteClick(userData.id) } }>
-                                        delete
-                                    </Button>
-                                    {/* <Button variant = "secondary" onClick = {this.handleDeleteClick(userData.id)}>
-                                        delete
-                                    </Button> */}
                                 </td>
                             </tr>
                         </tbody>
@@ -232,7 +183,7 @@ export class Userlist extends Component {
             <>
                 { this.state.errorMessage &&
                     <h3 className="error"> { this.state.errorMessage } </h3> }
-                <Form>
+                <Form className = "text-left">
                         <Form.Row>
                             <Form.Group as = {Col} xs = {9}>
                                 <Form.Control
@@ -256,11 +207,6 @@ export class Userlist extends Component {
                                 </Form.Control>
                             </Form.Group>
                         </Form.Row>
-                        <Form.Check type="checkbox" label="view all users" 
-                        name = 'check'
-                        value = {this.state.check}
-                        onChange = {this.handleCheck}
-                        size = "sm" />
                 </Form>
             {
             (!this.props.loading)?
